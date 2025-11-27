@@ -1,0 +1,121 @@
+{
+  "name": "atomic-shadcn",
+  "displayName": "Atomic Shadcn",
+  "description": "Organize shadcn/ui components using atomic design principles (atoms, molecules, organisms)",
+  "version": "0.0.1",
+  "publisher": "deepa",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deepa/atomic-shadcn-extension"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "shadcn",
+    "atomic-design",
+    "react",
+    "components",
+    "ui",
+    "organization"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "atomic-shadcn.init",
+        "title": "Atomic Shadcn: Initialize",
+        "category": "Atomic Shadcn"
+      },
+      {
+        "command": "atomic-shadcn.add",
+        "title": "Atomic Shadcn: Add Component",
+        "category": "Atomic Shadcn"
+      },
+      {
+        "command": "atomic-shadcn.organize",
+        "title": "Atomic Shadcn: Organize Components",
+        "category": "Atomic Shadcn"
+      },
+      {
+        "command": "atomic-shadcn.remove",
+        "title": "Atomic Shadcn: Remove All Packages",
+        "category": "Atomic Shadcn"
+      },
+      {
+        "command": "atomic-shadcn.uninstall",
+        "title": "Atomic Shadcn: Uninstall",
+        "category": "Atomic Shadcn"
+      },
+      {
+        "command": "atomic-shadcn.mapping",
+        "title": "Atomic Shadcn: Show Component Mapping",
+        "category": "Atomic Shadcn"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "atomic-shadcn.init",
+          "group": "atomic-shadcn@1",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "atomic-shadcn.add",
+          "group": "atomic-shadcn@2",
+          "when": "explorerResourceIsFolder"
+        },
+        {
+          "command": "atomic-shadcn.organize",
+          "group": "atomic-shadcn@3",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Atomic Shadcn",
+      "properties": {
+        "atomicShadcn.cliPath": {
+          "type": "string",
+          "default": "atomic-shadcn",
+          "description": "Path to the atomic-shadcn CLI (use 'atomic-shadcn' if globally installed)"
+        },
+        "atomicShadcn.showOutputChannel": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show output channel when running commands"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.27.0",
+    "eslint": "^9.39.1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3"
+  }
+}
