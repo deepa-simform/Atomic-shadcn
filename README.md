@@ -22,12 +22,14 @@ A VS Code extension that helps you organize shadcn/ui components into **atoms**,
 
 ### For Your Team
 
-1. **Download** [atomic-shadcn-0.0.1.vsix](https://github.com/deepa-simform/Adomic-shadcn/releases/download/v0.0.1/atomic-shadcn-0.0.1.vsix)
+1. **Download:** [atomic-shadcn-0.0.1.vsix](https://github.com/deepa-simform/Adomic-shadcn/releases/download/v0.0.1/atomic-shadcn-0.0.1.vsix)
 2. **Install in VS Code:**
    - Open Extensions (`Cmd+Shift+X`)
    - Click `...` → Install from VSIX
    - Select the downloaded file
 3. **Reload VS Code**
+
+**Or visit:** [Releases Page](https://github.com/deepa-simform/Adomic-shadcn/releases/latest)
 
 ### Requirements
 
