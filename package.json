@@ -55,6 +55,11 @@
         "command": "atomic-shadcn.mapping",
         "title": "Atomic Shadcn: Show Component Mapping",
         "category": "Atomic Shadcn"
+      },
+      {
+        "command": "atomic-shadcn.debug",
+        "title": "Atomic Shadcn: Debug Info",
+        "category": "Atomic Shadcn"
       }
     ],
     "menus": {

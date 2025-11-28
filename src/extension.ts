@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { AtomicShadcnCLI } from "./cli-logic";
 
 // Output channel for extension logs
 let outputChannel: vscode.OutputChannel;
@@ -35,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
       uninstallCommand
     ),
     vscode.commands.registerCommand("atomic-shadcn.mapping", mappingCommand),
+    vscode.commands.registerCommand("atomic-shadcn.debug", debugCommand),
     vscode.commands.registerCommand("atomic-shadcn.showMenu", showQuickMenu)
   );
 }
@@ -58,10 +60,13 @@ function getWorkspaceRoot(): string | undefined {
   return workspaceFolders[0].uri.fsPath;
 }
 
-// Helper function to get CLI path from settings
-function getCLIPath(): string {
-  const config = vscode.workspace.getConfiguration("atomicShadcn");
-  return config.get("cliPath", "atomic-shadcn");
+// Helper function to get CLI instance
+function getCLI(): AtomicShadcnCLI | null {
+  const workspaceRoot = getWorkspaceRoot();
+  if (!workspaceRoot) {
+    return null;
+  }
+  return new AtomicShadcnCLI(workspaceRoot, outputChannel);
 }
 
 // Helper function to show output channel if enabled
@@ -73,20 +78,18 @@ function showOutputIfEnabled() {
   }
 }
 
-// Helper function to run CLI command
+// Helper function to run CLI command using embedded logic
 async function runCLICommand(
   command: string,
   args: string[] = []
 ): Promise<void> {
-  const workspaceRoot = getWorkspaceRoot();
-  if (!workspaceRoot) {
+  const cli = getCLI();
+  if (!cli) {
+    vscode.window.showErrorMessage("No workspace folder open");
     return;
   }
 
-  const cliPath = getCLIPath();
-  const fullCommand = `${cliPath} ${command} ${args.join(" ")}`;
-
-  outputChannel.appendLine(`\n> ${fullCommand}`);
+  outputChannel.appendLine(`\n> atomic-shadcn ${command} ${args.join(" ")}`);
   showOutputIfEnabled();
 
   return vscode.window.withProgress(
@@ -98,28 +101,62 @@ async function runCLICommand(
     async (progress) => {
       progress.report({ message: "Running command..." });
 
-      // Create terminal and run command
-      const terminal = vscode.window.createTerminal({
-        name: "Atomic Shadcn",
-        cwd: workspaceRoot,
-      });
-      terminal.show();
-      terminal.sendText(fullCommand);
+      try {
+        switch (command) {
+          case "init":
+            cli.setupAtomicStructure();
+            break;
 
-      // Log to output channel
-      outputChannel.appendLine(
-        `Command executed in terminal: ${terminal.name}`
-      );
+          case "add":
+            if (args.length > 0) {
+              await cli.installComponent(args[0]);
+            } else {
+              throw new Error("Component name is required for add command");
+            }
+            break;
 
-      return new Promise<void>((resolve) => {
-        // Wait a bit for command to start
-        setTimeout(() => {
-          vscode.window.showInformationMessage(
-            `Atomic Shadcn: ${command} command sent to terminal`
-          );
-          resolve();
-        }, 1000);
-      });
+          case "organize":
+            cli.organizeComponents(args[0]);
+            break;
+
+          case "mapping":
+            cli.showMapping();
+            break;
+
+          case "debug":
+            cli.debug();
+            break;
+
+          case "remove":
+            if (args.length > 0) {
+              await cli.remove(args[0]);
+            } else {
+              await cli.remove();
+            }
+            break;
+
+          case "uninstall":
+            if (args.length > 0) {
+              // For individual component uninstall, we can implement later
+              throw new Error("Individual component uninstall not yet implemented");
+            } else {
+              await cli.uninstall();
+            }
+            break;
+
+          default:
+            throw new Error(`Unknown command: ${command}`);
+        }
+
+        vscode.window.showInformationMessage(
+          `Atomic Shadcn: ${command} completed successfully!`
+        );
+      } catch (error: any) {
+        const errorMessage = `Failed to run ${command}: ${error.message}`;
+        outputChannel.appendLine(`ERROR: ${errorMessage}`);
+        vscode.window.showErrorMessage(errorMessage);
+        throw error;
+      }
     }
   );
 }
@@ -206,13 +243,13 @@ async function removeCommand() {
     }
   } else {
     const confirm = await vscode.window.showWarningMessage(
-      "This will uninstall all @radix-ui packages. Component files will remain. Continue?",
+      "This will remove atomic-shadcn CLI scripts from package.json (Radix UI dependencies will be preserved). Continue?",
       "Yes",
       "No"
     );
 
     if (confirm === "Yes") {
-      outputChannel.appendLine("\n=== Remove All Packages ===");
+      outputChannel.appendLine("\n=== Remove CLI Scripts ===");
       await runCLICommand("remove");
     }
   }
@@ -281,6 +318,13 @@ async function mappingCommand() {
   outputChannel.show();
 }
 
+// Command: Debug information
+async function debugCommand() {
+  outputChannel.appendLine("\n=== Debug Information ===");
+  await runCLICommand("debug");
+  outputChannel.show();
+}
+
 // Command: Show quick menu
 async function showQuickMenu() {
   const options = await vscode.window.showQuickPick(
@@ -315,6 +359,11 @@ async function showQuickMenu() {
         description: "Display component classification",
         command: "mapping",
       },
+      {
+        label: "$(bug) Debug Info",
+        description: "Show debug information and project state",
+        command: "debug",
+      },
     ],
     {
       placeHolder: "Select an Atomic Shadcn command",
@@ -340,6 +389,9 @@ async function showQuickMenu() {
         break;
       case "mapping":
         await mappingCommand();
+        break;
+      case "debug":
+        await debugCommand();
         break;
     }
   }
