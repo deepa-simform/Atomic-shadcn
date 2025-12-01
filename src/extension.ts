@@ -137,8 +137,7 @@ async function runCLICommand(
 
           case "uninstall":
             if (args.length > 0) {
-              // For individual component uninstall, we can implement later
-              throw new Error("Individual component uninstall not yet implemented");
+              await cli.uninstallComponent(args[0]);
             } else {
               await cli.uninstall();
             }

@@ -2,7 +2,7 @@
 
 > Organize [shadcn/ui](https://ui.shadcn.com/) components using atomic design principles
 
-[![Version](https://img.shields.io/badge/version-0.0.1-blue.svg)](https://github.com/deepa/atomic-shadcn-extension)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/deepa-simform/Adomic-shadcn)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A VS Code extension that helps you organize shadcn/ui components into **atoms**, **molecules**, and **organisms** following atomic design principles.
@@ -12,11 +12,14 @@ A VS Code extension that helps you organize shadcn/ui components into **atoms**,
 ## ✨ Features
 
 - 🎯 **Atomic Organization** - Automatically categorize components
-- 📦 **Smart Installation** - Install and organize in one command
-- 🔄 **Auto Import Fixing** - Updates all imports automatically
-- 🗑️ **Flexible Removal** - Remove packages or revert structure
+- 📦 **Smart Installation** - Install components with auto dependency injection
+- 🔄 **Auto Import Fixing** - Updates all imports automatically across your project
+- 🗑️ **Component Removal** - Remove specific components with dependency cleanup
+- 🔙 **Component Uninstall** - Move components back to ui/ folder
 - 📊 **Component Mapping** - Visual component classification
 - 🚀 **Multiple Access** - Status bar, command palette, context menus
+- ✅ **Package.json Updates** - Automatic dependency management
+- 🔧 **NPM Install** - Automatic installation of required packages
 
 ## 📦 Installation
 
@@ -33,14 +36,9 @@ A VS Code extension that helps you organize shadcn/ui components into **atoms**,
 
 ### Requirements
 
-**The extension requires the CLI to be installed:**
-
-```bash
-cd /path/to/atomic-shadcn-cli
-sudo npm link
-```
-
-Verify: `atomic-shadcn --help`
+- VS Code 1.85.0 or higher
+- Node.js and npm installed
+- A project with shadcn/ui configured
 
 ## 🚀 Quick Start
 
@@ -170,6 +168,16 @@ card, form, table, data-table, calendar, date-picker, carousel, navigation-menu,
 - Context menu items appear on all folders (filtering in progress)
 
 ## Release Notes
+
+### 1.0.0 (Major Release)
+- ✨ **Automatic Dependency Injection** - Components now auto-add required dependencies to package.json
+- 📦 **NPM Install Integration** - Automatic npm install after adding components
+- 🗑️ **Enhanced Component Removal** - Remove specific components with full cleanup (files, exports, imports, dependencies)
+- 🔙 **Component Uninstall** - Move individual components back to ui/ folder with import updates
+- ✅ **Export Management** - Automatic export updates in all index files
+- 🔄 **Comprehensive Import Fixing** - Updates imports across entire project for all operations
+- 📝 **Detailed Logging** - Enhanced output with verification steps
+- 🐛 **Bug Fixes** - Fixed various issues with package.json updates and import handling
 
 ### 0.0.1 (Initial Release)
 - Command palette integration for all CLI commands
